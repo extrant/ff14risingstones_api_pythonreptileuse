@@ -1,6 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
-from requests_html import HTMLSession
 
 
 def search_player(character_name, group_name):
