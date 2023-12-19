@@ -19,3 +19,30 @@ requests|os|msvcrt|ctypes
 6. 签到领取奖励
 
 增加了Cookie登录信息的检测，可能每日都需要更新Cookie。在寻找自动获取Cookie的方案~
+
+
+裸露的API们：
+
+我自己
+https://apiff14risingstones.web.sdo.com/api/home/groupAndRole/getCharacterBindInfo?platform=1
+
+领取奖励
+https://apiff14risingstones.web.sdo.com/api/home/active/online2312/doSeal
+
+获取帖子列表
+https://apiff14risingstones.web.sdo.com/api/home/posts/postsList
+
+评论
+https://apiff14risingstones.web.sdo.com/api/home/posts/comment
+
+签到
+https://apiff14risingstones.web.sdo.com/api/home/sign/signIn
+
+发帖
+https://apiff14risingstones.web.sdo.com/api/home/posts/create
+
+用户界面
+https://apiff14risingstones.web.sdo.com/api/home/userInfo/getUserInfo?uuid={uuid}&page=1&limit=30
+
+玩家搜索
+https://apiff14risingstones.web.sdo.com/api/common/search
