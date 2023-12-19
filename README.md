@@ -8,13 +8,7 @@
 打开F12在网络处请求头找到cookie就可以直接复制粘贴到cookie.txt里。
 
 使用的库：
-requests
-
-os
-
-msvcrt 
-
-ctypes
+requests|os|msvcrt|ctypes
 
 实现功能：
 1. 搜索玩家并获取信息
