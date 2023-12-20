@@ -168,7 +168,7 @@ def post_comment(cookie_input):
     
 
 def post_id(cookie_input):    
-    url = "https://apiff14risingstones.web.sdo.com/api/home/posts/postsList?type=1&is_top=0&is_refine=0&part_id=52&hotType=postsHotNow&order=&page=1&limit=15"
+    url = "https://apiff14risingstones.web.sdo.com/api/home/posts/postsCommentDetail?id=9365&order=latest&page=1&limit=30"
 
     response = requests.get(url)
 
@@ -176,7 +176,7 @@ def post_id(cookie_input):
         data = response.json()
         rows = data["data"]["rows"]
         for row in rows:
-            posts_id = row["posts_id"]
+            posts_id = row["id"]
             print("posts_id:", posts_id)
             # 使用该 post_id 来进行点赞请求
             like_url = "https://apiff14risingstones.web.sdo.com/api/home/posts/like"
@@ -196,7 +196,7 @@ def post_id(cookie_input):
             }
             like_data = {
                 "id": posts_id,  # 使用从 post_id 中获取的值
-                "type": "1"
+                "type": "2"
             }
             like_response = requests.post(like_url, headers=like_headers, data=like_data)
             print(like_response.text)
