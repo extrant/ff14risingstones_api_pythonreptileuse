@@ -2,8 +2,18 @@ import requests
 import os
 import msvcrt 
 import ctypes
+import time
+import random
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver import Edge
+from selenium.webdriver.edge.options import Options
+from selenium.webdriver.edge.service import Service
 
 
+Cookie_can = False
 def search_player(character_name, group_name):
     url = "https://apiff14risingstones.web.sdo.com/api/common/search"
     params = {
@@ -95,7 +105,7 @@ def post_create(cookie_input, title, share, content):
         "part_id": "52",
         "title": title,
         "is_share": "0",
-        "content": "<p>" + content +"</p>",
+        "content": content,#"<p>" + content +"</p>",
         "scope": "1",
         "cover_pic": ""
     }
@@ -221,55 +231,134 @@ def get_price(cookie_input):
 
         print(f"Response for type {i}: {response.text}")
         
+
+
+def pc_password_login():#(username, password):
+    global cookie_input
+    try:
+        #看下面
+        edge_options = Options()
+        #使用chromium内核，打开开发者模式
+        edge_options.use_chromium = True
+        #添加参数
+        edge_options.add_argument('--disable-blink-features=AutomationControlled')
+        edge_options.add_argument("--log-level=3")
+        driver = webdriver.Edge(options=edge_options)
+        login_url = 'https://login.u.sdo.com/sdo/iframe/?appId=6788&areaId=1&thirdParty=wegame%7C310&returnURL=http%3A%2F%2Fapiff14risingstones.web.sdo.com%2Fapi%2Fhome%2FGHome%2Flogin%3FredirectUrl%3Dhttps%3A%2F%2Fff14risingstones.web.sdo.com%2Fpc%2Findex.html#/post'
+        driver.get(login_url)
+        time.sleep(random.randint(0, 2))
+        driver.execute_script(f"alert('完成登录后在控制台按下任意键')")
+        print("\n确保登录后按下任意键继续...")
+        msvcrt.getch() 
+        specific_element = EC.presence_of_element_located((By.ID, "el-id-8455-13"))
+        if specific_element:
+            print(specific_element)
+            print("目前来看登录成功")
+
+        cookies = driver.get_cookies()
+        for cookie in cookies:
+            print(cookie)
+            
+            
+        ff14risingstones_cookie = next((cookie['value'] for cookie in cookies if cookie['name'] == 'ff14risingstones'), None)
+
+        if ff14risingstones_cookie:
+            result = f"ff14risingstones={ff14risingstones_cookie}"
+            print(result)
+            
+            
+            with open("cookie.txt", "w") as file:
+                file.write(result)
+                            
+        else:
+            print("未找到名为'ff14risingstones'的Cookie")   
+            
+    except Exception as e:
+        print("登录账户异常," + str(e))
+        print('开始关闭Chrome浏览器驱动')
+        return [0, '999999', "登录账户异常," + str(e), [None]]
+
         
         
         
 def main_menu():
+    global Cookie_can, cookie_input
     while True:
+        cookie_input = get_cookie_from_fixed_file() 
+        who_i_am(cookie_input) 
         os.system('cls')
-        print("请选择要执行的操作：")
-        print("1. 搜索玩家并获取信息")
-        print("2. 发帖")
-        print("3. 签到")
-        print("4. 水评论")
-        print("5. 一键点赞")
-        print("6. 签到领取奖励")
-        choice = input("请输入操作编号：")
-        if choice == "1":
-            character_name = input("请输入玩家名称：")
-            group_name = input("请输入服务器名称：")
-            cookie_input = get_cookie_from_fixed_file()
-            uuid = search_player(character_name, group_name)
-            if uuid:
-                print(f"找到匹配的玩家，UUID为：{uuid}")
-                get_user_info(uuid)
+        if Cookie_can is False:             
+            print("你的Cookie已经失效辣！：")
+            print("1. 尝试获取cookie并填入")
+            print("2. 搜索玩家并获取信息")   
+            choice = input("请输入操作编号：")
+            if choice == "1":
+                #username = input("输入账号")
+                #password = input("输入密码")
+                pc_password_login()#(username, password)
+            elif choice == "2":
+                character_name = input("请输入玩家名称：")
+                group_name = input("请输入服务器名称：")
+                cookie_input = get_cookie_from_fixed_file()
+                uuid = search_player(character_name, group_name)
+                if uuid:
+                    print(f"找到匹配的玩家，UUID为：{uuid}")
+                    get_user_info(uuid)
+                else:
+                    print("未找到匹配的玩家")     
             else:
-                print("未找到匹配的玩家")
-        elif choice == "2":
-            cookie_input = get_cookie_from_fixed_file()
-            title = input("请输入标题：")
-            share = input("是否分享到动态 0or1 ：")
-            content = input("输入水群内容：")
-            post_create(cookie_input, title, share, content)
-        elif choice == "3":
-            cookie_input = get_cookie_from_fixed_file()
-            post_signin(cookie_input)
-        elif choice == "4":
-            cookie_input = get_cookie_from_fixed_file()
-            post_comment(cookie_input)
-        elif choice == "5":
-            cookie_input = get_cookie_from_fixed_file()
-            post_id(cookie_input)  
-        elif choice == "6":
-            cookie_input = get_cookie_from_fixed_file()
-            get_price(cookie_input)
-        else:
-            print("无效的选择")
-        print("\n按下任意键继续...")
-        msvcrt.getch() 
+                print("无效的选择")
+            print("\n按下任意键继续...")
+            msvcrt.getch()                     
+        if Cookie_can is True:
+            print("请选择要执行的操作：")
+            print("1. 搜索玩家并获取信息")
+            print("2. 发帖")
+            print("3. 签到")
+            print("4. 水评论")
+            print("5. 一键点赞")
+            print("6. 签到领取奖励")
+            print("7. 切换账户")
+            choice = input("请输入操作编号：")
+            if choice == "1":
+                character_name = input("请输入玩家名称：")
+                group_name = input("请输入服务器名称：")
+                cookie_input = get_cookie_from_fixed_file()
+                uuid = search_player(character_name, group_name)
+                if uuid:
+                    print(f"找到匹配的玩家，UUID为：{uuid}")
+                    get_user_info(uuid)
+                else:
+                    print("未找到匹配的玩家")
+            elif choice == "2":
+                cookie_input = get_cookie_from_fixed_file()
+                title = input("请输入标题：")
+                share = input("是否分享到动态 0or1 ：")
+                content = input("输入水群内容：")
+                post_create(cookie_input, title, share, content)
+            elif choice == "3":
+                cookie_input = get_cookie_from_fixed_file()
+                post_signin(cookie_input)
+            elif choice == "4":
+                cookie_input = get_cookie_from_fixed_file()
+                post_comment(cookie_input)
+            elif choice == "5":
+                cookie_input = get_cookie_from_fixed_file()
+                post_id(cookie_input)  
+            elif choice == "6":
+                cookie_input = get_cookie_from_fixed_file()
+                get_price(cookie_input)
+            elif choice == "7":
+                pc_password_login()               
+            else:
+                print("无效的选择")
+            print("\n按下任意键继续...")
+            msvcrt.getch() 
 
 
 def who_i_am(cookie_input): 
+    global Cookie_can
+    cookie_input = get_cookie_from_fixed_file()
     url = "https://apiff14risingstones.web.sdo.com/api/home/GHome/isLogin"
 
     headers = {
@@ -286,12 +375,16 @@ def who_i_am(cookie_input):
     response = requests.get(url, headers=headers)
 
     data = response.json()
-    character_name = data["data"]["character_name"]
-    group_name = data["data"]["group_name"]
-    new_class_name = "Cookie登录信息：" + " " + str(character_name) + " " + str(group_name)
-    ctypes.windll.kernel32.SetConsoleTitleW(ctypes.c_wchar_p(new_class_name))
+    print(data)
+    try:
+        character_name = data["data"]["character_name"]
+        group_name = data["data"]["group_name"]
+        new_class_name = "Cookie登录信息：" + " " + str(character_name) + " " + str(group_name)
+        ctypes.windll.kernel32.SetConsoleTitleW(ctypes.c_wchar_p(new_class_name))
+        Cookie_can = True
+    except:
+        ctypes.windll.kernel32.SetConsoleTitleW(ctypes.c_wchar_p("额额……好像Cookie出问题了捏"))
+        Cookie_can = False
 
-cookie_input = get_cookie_from_fixed_file()
-who_i_am(cookie_input)
 # 主程序入口
 main_menu()
