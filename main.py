@@ -240,10 +240,11 @@ def pc_password_login():#(username, password):
         edge_options = Options()
         #使用chromium内核，打开开发者模式
         edge_options.use_chromium = True
+        service = webdriver.EdgeService(executable_path=".\edge\msedgedriver.exe")
         #添加参数
         edge_options.add_argument('--disable-blink-features=AutomationControlled')
         edge_options.add_argument("--log-level=3")
-        driver = webdriver.Edge(options=edge_options)
+        driver = webdriver.Edge(service=service, options=edge_options)
         login_url = 'https://login.u.sdo.com/sdo/iframe/?appId=6788&areaId=1&thirdParty=wegame%7C310&returnURL=http%3A%2F%2Fapiff14risingstones.web.sdo.com%2Fapi%2Fhome%2FGHome%2Flogin%3FredirectUrl%3Dhttps%3A%2F%2Fff14risingstones.web.sdo.com%2Fpc%2Findex.html#/post'
         driver.get(login_url)
         time.sleep(random.randint(0, 2))
