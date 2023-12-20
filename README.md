@@ -20,9 +20,8 @@ requests | os | msvcrt | ctypes | selenium
 
 增加了Cookie登录信息的检测，可能每日都需要更新Cookie。在寻找自动获取Cookie的方案~
 
-增加了Cookie自动获取脚本。需要安装MicrosoftEdge最新版本120.0.2210.77，msedgedriver版本也是120.0.2210.77。注意需要将msedgedriver加入系统环境变量PATH中。
+增加了Cookie自动获取脚本。需要安装MicrosoftEdge最新版本120.0.2210.77，msedgedriver版本也是120.0.2210.77。
 
-可以将msedgedriver放入C盘然后增加系统PATH即可，安装包Releases自带。
 
 裸露的API们：
 
